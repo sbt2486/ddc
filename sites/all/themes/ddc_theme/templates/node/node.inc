@@ -30,3 +30,15 @@ function ddc_theme_preprocess_node__article__teaser(&$variables) {
   // Create linked title.
   $variables['linked_title'] = l($variables['title'], 'node/' . $variables['nid']);
 }
+
+/**
+ * Implements pre-processing for article content rendered in full view mode.
+ */
+function ddc_theme_preprocess_node__article__full(&$variables) {
+  if ($variables['uid']) {
+    $variables['author'] = theme(
+      'ddc_custom_article_author',
+      array('node' => $variables['node'])
+    );
+  }
+}
