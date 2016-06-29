@@ -1,0 +1,4 @@
+name = ddc_custom
+core = 7.x
+package = Custom
+
