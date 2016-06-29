@@ -29,6 +29,11 @@ function ddc_theme_preprocess_node__article__teaser(&$variables) {
 
   // Create linked title.
   $variables['linked_title'] = l($variables['title'], 'node/' . $variables['nid']);
+
+  // Check for highlighted option and add classes in case it's set.
+  if (ddc_custom_article_is_highlighted($variables['node'])) {
+    $variables['classes_array'][] = 'article-highlighted';
+  }
 }
 
 /**

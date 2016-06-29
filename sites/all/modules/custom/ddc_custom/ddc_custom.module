@@ -36,3 +36,11 @@ function theme_ddc_custom_article_author($variables) {
   $output .= '</div>';
   return $output;
 }
+
+/**
+ * Checks whether the given node is flagged as highlighted.
+ */
+function ddc_custom_article_is_highlighted($node) {
+  $items = field_get_items('node', $node, 'field_highlighted');
+  return !empty($items);
+}
