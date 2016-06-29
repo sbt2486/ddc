@@ -39,6 +39,17 @@ $conf['master_modules'] = array(
     'features',
     'fe_block',
 
+    // Customizations.
+
+    // Contrib modules.
+    'date',
+    'date_popup',
+    'date_views',
+    'date_api',
+
+    // Custom modules.
+    'ddc_custom',
+
     //Features
     'ddc_article',
     'ddc_block',
