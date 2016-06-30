@@ -12,6 +12,7 @@ $master_stage_modules = array(
   'field_ui',
   'strongarm',
   'views_ui',
+  'navbar',
 );
 
 $master_local_modules = $master_stage_modules + array(
@@ -28,7 +29,6 @@ $conf['master_modules'] = array(
     'rdf',
     'path',
     'number',
-    'navbar',
     'menu',
     'list',
     'libraries',
@@ -42,7 +42,6 @@ $conf['master_modules'] = array(
     'fe_block',
 
     // Customizations.
-
     // Contrib modules.
     'date',
     'date_popup',
