@@ -113,7 +113,7 @@ function ddc_custom_node_is_public($node) {
  */
 function ddc_custom_article_is_highlighted($node) {
   $items = field_get_items('node', $node, 'field_highlighted');
-  return !empty($items);
+  return !empty($items) && $items[0]['value'] === '1';
 }
 
 /**
