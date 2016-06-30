@@ -14,7 +14,9 @@ $master_stage_modules = array(
   'views_ui',
 );
 
-$master_local_modules = $master_stage_modules;
+$master_local_modules = $master_stage_modules + array(
+  'admin_menu',
+);
 
 $conf['install_profile'] = 'standard';
 $conf['master_version'] = 2;
