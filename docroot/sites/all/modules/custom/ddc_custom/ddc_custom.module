@@ -1,0 +1,139 @@
+<?php
+/**
+ * @file
+ * Custom code additions for the DDC.
+ */
+
+/**
+ * The grant id used for anonymous users.
+ */
+define('DDC_CUSTOM_GRANT_ID_PUBLIC', 1);
+
+/**
+ * The grant id used for authenticated users.
+ */
+define('DDC_CUSTOM_GRANT_ID_RESTRICTED', 2);
+
+/**
+ * The grant realm used in node access hooks.
+ */
+define('DDC_CUSTOM_ACCESS_REALM', 'ddc_custom_article');
+
+/**
+ * Implements hook_theme().
+ */
+function ddc_custom_theme($existing, $type, $theme, $path) {
+  return array(
+    'ddc_custom_article_author' => array(
+      'variables' => array('node' => NULL),
+    )
+  );
+}
+
+/**
+ * Implements hook_node_access_records().
+ */
+function ddc_custom_node_access_records($node) {
+  if (!ddc_custom_node_is_public($node)) {
+    // Node is yet restricted, grant view only to authenticated users.
+    $grants[] = array(
+      'realm' => DDC_CUSTOM_ACCESS_REALM,
+      'gid' => DDC_CUSTOM_GRANT_ID_RESTRICTED,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+  }
+  else {
+    // Node is full published and can be accessed by anyone, so grant view to
+    // anybody.
+    $grants[] = array(
+      'realm' => DDC_CUSTOM_ACCESS_REALM,
+      'gid' => DDC_CUSTOM_GRANT_ID_PUBLIC,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+      'priority' => 0,
+    );
+  }
+
+  return $grants;
+}
+
+/**
+ * Implements hook_node_grants().
+ */
+function ddc_custom_node_grants($account, $op) {
+  if ($op == 'view') {
+    if (array_key_exists(DRUPAL_AUTHENTICATED_RID, $account->roles)) {
+      // Give both grant ids authenticated users, such that they can view any
+      // node.
+      $grants[DDC_CUSTOM_ACCESS_REALM] = array(
+        DDC_CUSTOM_GRANT_ID_PUBLIC,
+        DDC_CUSTOM_GRANT_ID_RESTRICTED,
+      );
+    }
+    else {
+      // Anonymous users aren't allowed to view restricted content, give them
+      // only the public grant id.
+      $grants[DDC_CUSTOM_ACCESS_REALM] = array(
+        DDC_CUSTOM_GRANT_ID_PUBLIC,
+      );
+    }
+
+    return $grants;
+  }
+}
+
+/**
+ * Checks whether a node is accessible for anonymous users.
+ *
+ * Nodes that are highlighted but not fully published yet (full publication date
+ * field), are restricted.
+ *
+ * @param object $node
+ *   The fully loaded node object.
+ *
+ * @return bool
+ *   TRUE if the node is highlighted but full publication date has passed, FALSE
+ *   otherwise.
+ */
+function ddc_custom_node_is_public($node) {
+  $items = field_get_items('node', $node, 'field_full_publication_date');
+  $publication_timestamp = 0;
+  if (!empty($items[0]['value'])) {
+    $publication_timestamp = $items[0]['value'];
+  }
+  return !(ddc_custom_article_is_highlighted($node) && time() < $publication_timestamp);
+}
+
+/**
+ * Checks whether the given node is flagged as highlighted.
+ */
+function ddc_custom_article_is_highlighted($node) {
+  $items = field_get_items('node', $node, 'field_highlighted');
+  return !empty($items) && $items[0]['value'] === '1';
+}
+
+/**
+ * Default pre-processing for the custom article author theme function.
+ */
+function template_preprocess_ddc_custom_article_author(&$variables) {
+  $user = user_load($variables['node']->uid);
+  $user_view = user_view($user);
+  $variables['user'] = $user;
+  $variables['author'] = drupal_render($user_view);
+}
+
+/**
+ * Default theme implementation for ddc_custom_article_author.
+ */
+function theme_ddc_custom_article_author($variables) {
+  $output = '<h4>' . t('About the author') . '</h4>';
+  $output .= '<div class="author-wrapper">';
+  $output .= $variables['user']->name;
+  $output .= $variables['author'];
+  $output .= '</div>';
+  return $output;
+}
