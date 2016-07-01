@@ -15,8 +15,9 @@ $master_stage_modules = array(
   'navbar',
 );
 
-$master_local_modules = $master_stage_modules + array(
-  'admin_menu',
+$master_local_modules = array_merge(
+  $master_stage_modules,
+  array('admin_menu', 'views_bulk_operations', 'entity')
 );
 
 $conf['install_profile'] = 'standard';
