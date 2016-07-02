@@ -41,9 +41,17 @@ function ddc_theme_preprocess_node__article__teaser(&$variables) {
  */
 function ddc_theme_preprocess_node__article__full(&$variables) {
   if ($variables['uid']) {
-    $variables['author'] = theme(
-      'ddc_custom_article_author',
-      array('node' => $variables['node'])
+    $account = user_load($variables['uid']);
+
+    // Retrieve all profile fields and attach to $account->content.
+    user_build_content($account);
+    $user_profile = $account->content;
+    // We don't need duplicate rendering info in account->content.
+    unset($account->content);
+    $user_profile += array(
+      '#theme' => 'user_profile',
+      '#account' => $account,
     );
+    $variables['author'] = drupal_render($user_profile);
   }
 }

@@ -16,9 +16,13 @@
         <?php print render($content['field_publication_date']); ?>
         <?php print render($content['body']); ?>
         <br />
+
+        <section>
         <?php if ($uid): ?>
+          <h4><?php print t('About the author'); ?></h4>
           <?php print $author; ?>
         <?php endif; ?>
+        </section>
       </div>
     </div>
   </article>

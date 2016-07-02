@@ -20,17 +20,6 @@ define('DDC_CUSTOM_GRANT_ID_RESTRICTED', 2);
 define('DDC_CUSTOM_ACCESS_REALM', 'ddc_custom_article');
 
 /**
- * Implements hook_theme().
- */
-function ddc_custom_theme($existing, $type, $theme, $path) {
-  return array(
-    'ddc_custom_article_author' => array(
-      'variables' => array('node' => NULL),
-    )
-  );
-}
-
-/**
  * Implements hook_node_access_records().
  */
 function ddc_custom_node_access_records($node) {
@@ -116,24 +105,3 @@ function ddc_custom_article_is_highlighted($node) {
   return !empty($items) && $items[0]['value'] === '1';
 }
 
-/**
- * Default pre-processing for the custom article author theme function.
- */
-function template_preprocess_ddc_custom_article_author(&$variables) {
-  $user = user_load($variables['node']->uid);
-  $user_view = user_view($user);
-  $variables['user'] = $user;
-  $variables['author'] = drupal_render($user_view);
-}
-
-/**
- * Default theme implementation for ddc_custom_article_author.
- */
-function theme_ddc_custom_article_author($variables) {
-  $output = '<h4>' . t('About the author') . '</h4>';
-  $output .= '<div class="author-wrapper">';
-  $output .= $variables['user']->name;
-  $output .= $variables['author'];
-  $output .= '</div>';
-  return $output;
-}
