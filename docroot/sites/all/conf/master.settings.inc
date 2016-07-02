@@ -51,6 +51,7 @@ $conf['master_modules'] = array(
     'views_bulk_operations',
     'entity',
     'xautoload',
+    'views_load_more',
 
     // Custom modules.
     'ddc_custom',
