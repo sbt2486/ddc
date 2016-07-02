@@ -52,6 +52,10 @@ $conf['master_modules'] = array(
     'entity',
     'xautoload',
     'views_load_more',
+    'acquia_search',
+    'apachesolr',
+    'apachesolr_search',
+    'acquia_agent',
 
     // Custom modules.
     'ddc_custom',
