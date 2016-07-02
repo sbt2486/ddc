@@ -4,6 +4,8 @@
  * Custom code additions for the DDC.
  */
 
+use \Drupal\ddc_custom\EntityWrapper\Node\NodeWrapper;
+
 /**
  * The grant id used for anonymous users.
  */
@@ -23,30 +25,35 @@ define('DDC_CUSTOM_ACCESS_REALM', 'ddc_custom_article');
  * Implements hook_node_access_records().
  */
 function ddc_custom_node_access_records($node) {
-  if (!ddc_custom_node_is_public($node)) {
-    // Node is yet restricted, grant view only to authenticated users.
-    $grants[] = array(
-      'realm' => DDC_CUSTOM_ACCESS_REALM,
-      'gid' => DDC_CUSTOM_GRANT_ID_RESTRICTED,
-      'grant_view' => 1,
-      'grant_update' => 0,
-      'grant_delete' => 0,
-      'priority' => 0,
-    );
-  }
-  else {
-    // Node is full published and can be accessed by anyone, so grant view to
-    // anybody.
-    $grants[] = array(
-      'realm' => DDC_CUSTOM_ACCESS_REALM,
-      'gid' => DDC_CUSTOM_GRANT_ID_PUBLIC,
-      'grant_view' => 1,
-      'grant_update' => 0,
-      'grant_delete' => 0,
-      'priority' => 0,
-    );
-  }
+  $node_wrapper = new NodeWrapper($node);
+  $grants = array();
 
+  try {
+    if (!$node_wrapper->articleIsPublic()) {
+      // Node is yet restricted, grant view only to authenticated users.
+      $grants[] = array(
+        'realm' => DDC_CUSTOM_ACCESS_REALM,
+        'gid' => DDC_CUSTOM_GRANT_ID_RESTRICTED,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+    }
+    else {
+      // Node is full published and can be accessed by anyone, so grant view to
+      // anybody.
+      $grants[] = array(
+        'realm' => DDC_CUSTOM_ACCESS_REALM,
+        'gid' => DDC_CUSTOM_GRANT_ID_PUBLIC,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+    }
+  }
+  catch (Exception $e) {}
   return $grants;
 }
 
@@ -70,38 +77,8 @@ function ddc_custom_node_grants($account, $op) {
         DDC_CUSTOM_GRANT_ID_PUBLIC,
       );
     }
-
-    return $grants;
   }
-}
 
-/**
- * Checks whether a node is accessible for anonymous users.
- *
- * Nodes that are highlighted but not fully published yet (full publication date
- * field), are restricted.
- *
- * @param object $node
- *   The fully loaded node object.
- *
- * @return bool
- *   TRUE if the node is highlighted but full publication date has passed, FALSE
- *   otherwise.
- */
-function ddc_custom_node_is_public($node) {
-  $items = field_get_items('node', $node, 'field_full_publication_date');
-  $publication_timestamp = 0;
-  if (!empty($items[0]['value'])) {
-    $publication_timestamp = $items[0]['value'];
-  }
-  return !(ddc_custom_article_is_highlighted($node) && time() < $publication_timestamp);
-}
-
-/**
- * Checks whether the given node is flagged as highlighted.
- */
-function ddc_custom_article_is_highlighted($node) {
-  $items = field_get_items('node', $node, 'field_highlighted');
-  return !empty($items) && $items[0]['value'] === '1';
+  return !empty($grants) ? $grants : array();
 }
 

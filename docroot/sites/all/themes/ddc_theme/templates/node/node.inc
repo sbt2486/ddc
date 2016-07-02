@@ -4,6 +4,8 @@
  * Node template functions.
  */
 
+use \Drupal\ddc_custom\EntityWrapper\Node\NodeWrapper;
+
 /**
  * Implements hook_preprocess_node().
  */
@@ -25,13 +27,16 @@ function ddc_theme_preprocess_node(&$variables) {
   }
 }
 
+/**
+ * Implements pre-processing for article content rendered in teaser view mode.
+ */
 function ddc_theme_preprocess_node__article__teaser(&$variables) {
-
   // Create linked title.
   $variables['linked_title'] = l($variables['title'], 'node/' . $variables['nid']);
 
+  $node_wrapper = new NodeWrapper($variables['node']);
   // Check for highlighted option and add classes in case it's set.
-  if (ddc_custom_article_is_highlighted($variables['node'])) {
+  if ($node_wrapper->articleIsHighlighted()) {
     $variables['classes_array'][] = 'article-highlighted';
   }
 }
@@ -41,17 +46,7 @@ function ddc_theme_preprocess_node__article__teaser(&$variables) {
  */
 function ddc_theme_preprocess_node__article__full(&$variables) {
   if ($variables['uid']) {
-    $account = user_load($variables['uid']);
-
-    // Retrieve all profile fields and attach to $account->content.
-    user_build_content($account);
-    $user_profile = $account->content;
-    // We don't need duplicate rendering info in account->content.
-    unset($account->content);
-    $user_profile += array(
-      '#theme' => 'user_profile',
-      '#account' => $account,
-    );
-    $variables['author'] = drupal_render($user_profile);
+    $node_wrapper = new NodeWrapper($variables['node']);
+    $variables['author'] = $node_wrapper->renderNodeAuthor();
   }
 }

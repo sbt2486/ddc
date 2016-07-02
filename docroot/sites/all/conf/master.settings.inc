@@ -17,7 +17,7 @@ $master_stage_modules = array(
 
 $master_local_modules = array_merge(
   $master_stage_modules,
-  array('admin_menu', 'views_bulk_operations', 'entity')
+  array('admin_menu')
 );
 
 $conf['install_profile'] = 'standard';
@@ -48,6 +48,9 @@ $conf['master_modules'] = array(
     'date_popup',
     'date_views',
     'date_api',
+    'views_bulk_operations',
+    'entity',
+    'xautoload',
 
     // Custom modules.
     'ddc_custom',
