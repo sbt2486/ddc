@@ -4,7 +4,16 @@ article {
     border-bottom: #AAA solid 1px;
     padding-bottom: 10px;
     margin-bottom: 20px;
-    height: 230px;
+    min-height: 250px;
+
+    @media (min-width: $screen-md-min) {
+      min-height: initial;
+      height: 270px;
+    }
+
+    @media (min-width: $screen-lg-min) {
+      height: 230px;
+    }
 
     @include box-shadow(inset 1px 1px 7px rgba(0,0,0,0.2));
     @include border-radius(5px);
