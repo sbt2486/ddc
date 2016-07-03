@@ -14,7 +14,7 @@
         </div>
         <div class="media-body">
           <h1><?php print $linked_title; ?></h1>
-          <?php print render($content['field_subtitle']); ?>
+          <h3><?php print $field_subtitle[0]['safe_value']; ?></h3>
           <?php print render($content['field_publication_date']); ?>
           <?php print render($content['body']); ?>
         </div>

@@ -37,7 +37,7 @@
 <div class="profile"<?php print $attributes; ?>>
   <div class="col-sm-1"><?php print render($user_profile['user_picture']); ?></div>
   <div class="col-sm-11">
-    <?php print $user->name; ?>
+    <h5 class="user-name"><?php print $user->name; ?></h5>
     <?php print render($user_profile); ?>
   </div>
 </div>

@@ -17,7 +17,7 @@
         <?php print render($content['body']); ?>
         <br />
 
-        <section>
+        <section class="node-author">
         <?php if ($uid): ?>
           <h4><?php print t('About the author'); ?></h4>
           <?php print $author; ?>
