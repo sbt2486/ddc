@@ -35,7 +35,7 @@ function ddc_article_field_default_field_instances() {
         'label' => 'hidden',
         'module' => 'text',
         'settings' => array(
-          'trim_length' => 300,
+          'trim_length' => 200,
         ),
         'type' => 'text_trimmed',
         'weight' => 3,
